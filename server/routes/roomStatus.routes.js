@@ -1,18 +1,17 @@
-import {Router} from "express"; 
-import { getRoomsStatus, getRoomStatus, createRoomStatus, updateRoomStatus, deleteRoomStatus } from "../controllers/roomStatus.controller";
+import { Router } from "express"; 
+import { getRoomsStatus, getRoomStatus, createRoomStatus, updateRoomStatus, deleteRoomStatus } from "../controllers/roomStatus.controller.js";
 
 const router = Router();
 
-router.get('/roles', getRoomsStatus)
+router.get('/roomStatus', getRoomsStatus)
 
-router.get('/roles:id', getRoomStatus)
+router.get('/roomStatus/:id_estado', getRoomStatus)
 
-/*
-router.post('/roles', createRoomStatus)
+router.post('/roomStatus', createRoomStatus)
 
-router.patch('/roles:id', updateRoomStatus)
+router.patch('/roomStatus/:id_estado', updateRoomStatus)
 
-router.delete('/roles:id', deleteRoomStatus)
-*/
+router.delete('/roomStatus/:id_estado', deleteRoomStatus)
+
 
 export default router;

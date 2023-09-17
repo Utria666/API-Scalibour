@@ -1,17 +1,17 @@
-import {Router} from "express"; 
-import { getRoles, getRole, createRole, updateRole, deleteRole } from "../controllers/roles.controller";
+import { Router } from "express"; 
+import { getRoles,getRole,createRole,updateRole,deleteRole } from "../controllers/roles.controller.js";
 
-const router = Router();
+const routerRoles = Router();
 
-router.get('/roles', getRoles)
+routerRoles.get('/roles', getRoles)
 
-router.get('/roles:id', getRole)
+routerRoles.get('/roles/:id_rol',getRole)
 
-router.post('/roles', createRole)
+routerRoles.post('/roles', createRole)
 
-router.patch('/roles:id', updateRole)
+routerRoles.patch('/roles/:id_rol', updateRole)
 
-router.delete('/roles:id', deleteRole)
+routerRoles.delete('/roles/:id_rol', deleteRole)
 
 
-export default router;
+export default routerRoles;

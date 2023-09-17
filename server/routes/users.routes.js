@@ -6,14 +6,14 @@ const router = Router();
 
 router.get('/users',getUsers )
 
-router.get('/users/:id',getUser )
+router.get('/users/:cliente_id',getUser )
 
 router.get('/userslogin',loginUser )
 
 router.post('/users', createUser)
 
-router.patch('/users/:id', updateUser)
+router.patch('/users/:cliente_id', updateUser)
 
-router.delete('/users/:id',deleteUser)
+router.delete('/users/:cliente_id',deleteUser)
 
 export default router;
