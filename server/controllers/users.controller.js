@@ -4,7 +4,7 @@ import { createAccessToken } from '../libs/jwt.js'
 
 export const getUsers = async(req, res) => {
     try {
-        const [rows] =await pool.query('SELECT * FROM `clientes`')
+        const [rows] =await pool.query('SELECT clientes.cliente_id, clientes.identificacion, clientes.nombres, clientes.correo, clientes.clave, rol.nombre_rol FROM `clientes` INNER JOIN rol ON clientes.id_rol = rol.id_rol ORDER BY clientes.cliente_id ASC;')
         res.json(rows)
     } catch (error) {
         return res.status(500).json({message: error.message})
@@ -13,7 +13,7 @@ export const getUsers = async(req, res) => {
 
 export const getUser = async(req, res) => {
     try {
-        const [rows] =await pool.query('SELECT * FROM `clientes` WHERE cliente_id = ?',[req.params.cliente_id])
+        const [rows] =await pool.query('SELECT clientes.cliente_id, clientes.identificacion, clientes.nombres, clientes.correo, clientes.clave, rol.nombre_rol FROM `clientes` INNER JOIN rol ON clientes.id_rol = rol.id_rol WHERE cliente_id = ?;',[req.params.cliente_id])
         if(rows.length <= 0)return res.status(404).json({message: `No se encontro ningun usuario por el id: ${req.params.cliente_id}`}) 
         res.json(rows[0])
     } catch (error) {
@@ -22,12 +22,12 @@ export const getUser = async(req, res) => {
 }
 
 export const createUser = async (req, res) => {
-    const {identificacion, nombres, correo, clave, id_rol} = req.body
+    const {identificacion, nombres, correo, clave} = req.body
 
     try {
         
         const passwordHash = await bcrypt.hash(clave, 10)
-        const [rows] = await pool.query('INSERT INTO `clientes` (`identificacion`, `nombres`, `correo`, `clave`, `id_rol`) VALUES(?,?,?,?,?)',[identificacion, nombres, correo, passwordHash, id_rol])
+        const [rows] = await pool.query('INSERT INTO `clientes` (`identificacion`, `nombres`, `correo`, `clave`) VALUES(?,?,?,?)',[identificacion, nombres, correo, passwordHash])
         const token =  await createAccessToken(rows.insertId)
         res.cookie('token', token)
         res.send({
@@ -35,8 +35,7 @@ export const createUser = async (req, res) => {
             identificacion, 
             nombres, 
             correo, 
-            clave, 
-            id_rol
+            clave
         })
     } catch (error) {
         return res.status(500).json({message: error.message})
