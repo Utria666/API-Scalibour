@@ -5,7 +5,7 @@ import {pool} from '../db.js'
 //Metodo para obtener todos los datos de la tabla "rol"
 export const getRoles = async(req, res) => {
     try {
-        const [rows] = await pool.query('SELECT * FROM `rol`')
+        const [rows] = await pool.query('SELECT * FROM `rol` ORDER BY `rol`.`id_rol` ASC')
         res.json(rows)
     } catch (error) {
         return res.status(500).json({message: error.message})
@@ -17,9 +17,8 @@ export const getRoles = async(req, res) => {
 export const getRole = async(req, res) => {
     try {
         const [rows] =await pool.query('SELECT * FROM `rol` WHERE id_rol = ?',[req.params.id_rol]);
-        
         if(rows.length <= 0) return res.status(400).json({message: `Ningun rol encontrado con el id ${req.params.id_rol}`})
-        res.json(rows)
+        res.json(rows[0])
     } catch (error) {
         return res.status(500).json({message: error.message})
     }
@@ -50,7 +49,7 @@ export const updateRole = async (req, res) => {
     
     try {
         const [result] = await pool.query('UPDATE `rol` SET `nombre_rol`=IFNULL(?, nombre_rol) WHERE id_rol = ?', [nombre_rol, id_rol])
-        if(result.affectedRows === 0) return res.status(404).json({message: `No fue posible actualizar ningun campo del rol: ${req.param.id_rol} `})
+        if(result.affectedRows === 0) return res.status(404).json({message: `No fue posible actualizar ningun campo del rol: ${req.params.id_rol} `})
         const [rows] = await pool.query('SELECT * FROM `rol` WHERE id_rol = ?',[id_rol])
         res.json(rows[0])
     } catch (error) {
@@ -63,8 +62,8 @@ export const updateRole = async (req, res) => {
 export const deleteRole = async (req, res) => {
     try {
         const [rows] = await pool.query('DELETE FROM `rol` WHERE id_rol = ?', [req.params.id_rol])
-        if(rows.affectedRows <= 0) res.status(404).json({message: `No fue posible eliminar el rol id: ${req.params.id_rol}`})
-        res.send('Rol eliminado')
+        if(rows.affectedRows <= 0) return res.status(404).json({message: `No fue posible eliminar el rol id: ${req.params.id_rol}`})
+         res.send('Rol eliminado')
     } catch (error) {
         return res.status(500).json({message: error.message})
     }

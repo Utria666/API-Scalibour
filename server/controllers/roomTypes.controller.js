@@ -2,7 +2,7 @@ import {pool} from '../db.js'
 
 export const getRoomTypes = async(req, res) => {
     try {
-        const [rows] = await pool.query('SELECT * FROM `tipo_habitaciones`')
+        const [rows] = await pool.query('SELECT * FROM `tipo_habitaciones` ORDER BY `tipo_habitaciones`.`tipo_habitacion_id` ASC')
 
         res.json(rows)
     } catch (error) {
@@ -13,8 +13,7 @@ export const getRoomTypes = async(req, res) => {
 export const getRoomType = async(req, res) => {
     try {
         const [rows] = await pool.query('SELECT * FROM `tipo_habitaciones` WHERE tipo_habitacion_id = ?', [req.params.id])
-
-        if(rows.lenght <= 0) return res.status(404).json({message: `No se encontro ningun tipo de habitacion por el id: ${req.params.id}`})
+        if(rows.length <= 0) return res.status(404).json({message: `No se encontro ningun tipo de habitacion por el id: ${req.params.id}`})
         res.json(rows[0])
     } catch (error) {
         return res.status(500).json({message: error.message})
@@ -46,7 +45,7 @@ export const updateRoomType = async (req, res) => {
     try {
         const [result] = await pool.query('UPDATE `tipo_habitaciones` SET `nombre_tipo_habitacion` = IFNULL(?, nombre_tipo_habitacion), `descripcion` = IFNULL(?, descripcion), `precio_base` = IFNULL(?, precio_base), `capacidad` = IFNULL(?, capacidad) WHERE tipo_habitacion_id = ?', [nombre_tipo_habitacion, descripcion, precio_base, capacidad, id])
 
-        if(result.affectedRows === 0) return res.statud(404).json({message: `No se pudo actualizar ningun tipo de habitacion por el id: ${req.params.id}`})
+        if(result.affectedRows === 0) return res.status(404).json({message: `No se pudo actualizar ningun tipo de habitacion por el id: ${req.params.id}`})
 
         const [rows] = await pool.query('SELECT * FROM `tipo_habitaciones` WHERE tipo_habitacion_id = ?', [id])
 

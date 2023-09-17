@@ -5,7 +5,7 @@ import {pool} from '../db.js'
 //Metodo para obtener todos los datos de la tabla "estado_habitacion"
 export const getRoomsStatus = async(req, res) => {
     try {
-        const [rows] = await pool.query('SELECT * FROM `estado_habitacion`')
+        const [rows] = await pool.query('SELECT * FROM `estado_habitacion` ORDER BY `estado_habitacion`.`id_estado` ASC')
         res.json(rows)
     } catch (error) {
         return res.status(500).json({message: error.message})
@@ -17,8 +17,8 @@ export const getRoomsStatus = async(req, res) => {
 export const getRoomStatus = async(req, res) => {
     try {
         const [rows] = await pool.query('SELECT * FROM `estado_habitacion` WHERE id_estado = ?',[req.params.id_estado])
-        if(rows.length <= 0) return res.status(400).json({message: `Ningun estado de habitacion encontrado con el id ${req.param.id_estado}`})
-        res.json(rows)
+        if(rows.length <= 0) return res.status(400).json({message: `Ningun estado de habitacion encontrado con el id ${req.params.id_estado}`})
+        res.json(rows[0])
     } catch (error) {
         return res.status(500).json({message: error.message})
     }
@@ -48,7 +48,7 @@ export const updateRoomStatus = async (req, res) => {
     
     try {
         const [result] = await pool.query('UPDATE `estado_habitacion` SET `nombre`=IFNULL(?, nombre) WHERE id_estado = ?', [nombre, id_estado])
-        if(result.affectedRows === 0) return res.status(404).json({message: `No fue posible actualizar ningun campo del estado de habitacion: ${req.param.id_estado} `})
+        if(result.affectedRows === 0) return res.status(404).json({message: `No fue posible actualizar ningun campo del estado de habitacion: ${req.params.id_estado} `})
         const [rows] = await pool.query('SELECT * FROM `estado_habitacion` WHERE id_estado = ?',[id_estado])
         res.json(rows[0])
     } catch (error) {
@@ -61,7 +61,7 @@ export const updateRoomStatus = async (req, res) => {
 export const deleteRoomStatus = async (req, res) => {
     try {
         const [rows] = await pool.query('DELETE FROM `estado_habitacion` WHERE id_estado = ?', [req.params.id_estado])
-        if(rows.affectedRows <= 0) res.status(404).json({message: `No fue posible eliminar el estado id: ${req.params.id_estado}`})
+        if(rows.affectedRows <= 0) return res.status(404).json({message: `No fue posible eliminar el estado id: ${req.params.id_estado}`})
         res.send('Estado de habitación eliminado')
     } catch (error) {
         return res.status(500).json({message: error.message})
