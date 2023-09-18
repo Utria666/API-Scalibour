@@ -35,7 +35,6 @@ export const createUser = async (req, res) => {
             identificacion, 
             nombres, 
             correo, 
-            clave
         })
     } catch (error) {
         return res.status(500).json({message: error.message})

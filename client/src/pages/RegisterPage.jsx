@@ -75,17 +75,17 @@ function LoginPage() {
                             }`}
                           />
                           <label className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">
-                            Identificacion
+                            identificacion
                           </label>
                         </div>
                         <div className="relative">
                           <input
                             type="text"
-                            {...register("nombre", {
+                            {...register("nombres", {
                               required: "El nombre es obligatorio",
                             })}
                             className={`block px-2.5 pb-2.5 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 ${
-                              errors.nombre ? "border-red-500" : ""
+                              errors.nombres ? "border-red-500" : ""
                             }`}
                           />
                           <label className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">
@@ -107,18 +107,18 @@ function LoginPage() {
                           </div>
                           <input
                             type="text"
-                            {...register("email", {
+                            {...register("correo", {
                               required: "El correo es obligatorio",
                             })}
                             className={` border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${
-                              errors.email ? "border-red-500" : ""
+                              errors.correo ? "border-red-500" : ""
                             }`}
                           />
                         </div>
                         <div className="relative">
                           <input
                             type="password"
-                            {...register("password", {
+                            {...register("clave", {
                               required: "La contraseña es requerida",
                               pattern: {
                                 value: /^(?=.*[A-Z])(?=.*[a-zA-Z0-9]).{8,}$/,
@@ -127,7 +127,7 @@ function LoginPage() {
                               },
                             })}
                             className={`block px-2.5 pb-2.5 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 ${
-                              errors.password ? "border-red-500" : ""
+                              errors.clave ? "border-red-500" : ""
                             }`}
                             placeholder="*********"
                           />
@@ -143,7 +143,7 @@ function LoginPage() {
                                 required: "Debe confirmar la contraseña",
                                 validate: {
                                   matchesPassword: (value) =>
-                                    value === getValues("password") ||
+                                    value === getValues("clave") ||
                                     "Las contraseñas no coinciden",
                                 },
                               })}
