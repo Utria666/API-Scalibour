@@ -4,7 +4,7 @@ import { createAccessToken } from '../libs/jwt.js'
 
 export const getUsers = async(req, res) => {
     try {
-        const [rows] =await pool.query('SELECT * FROM `users`')
+        const [rows] =await pool.query('SELECT clientes.cliente_id, clientes.identificacion, clientes.nombres, clientes.correo, clientes.clave, rol.nombre_rol FROM `clientes` INNER JOIN rol ON clientes.id_rol = rol.id_rol ORDER BY clientes.cliente_id ASC;')
         res.json(rows)
     } catch (error) {
         return res.status(500).json({message: error.message})
@@ -13,8 +13,8 @@ export const getUsers = async(req, res) => {
 
 export const getUser = async(req, res) => {
     try {
-        const [rows] =await pool.query('SELECT * FROM `users` WHERE id = ?',[req.params.id])
-        if(rows.length <= 0)return res.status(404).json({message: `No se encontro ningun usuario por el id: ${req.params.id}`}) 
+        const [rows] =await pool.query('SELECT clientes.cliente_id, clientes.identificacion, clientes.nombres, clientes.correo, clientes.clave, rol.nombre_rol FROM `clientes` INNER JOIN rol ON clientes.id_rol = rol.id_rol WHERE cliente_id = ?;',[req.params.cliente_id])
+        if(rows.length <= 0)return res.status(404).json({message: `No se encontro ningun usuario por el id: ${req.params.cliente_id}`}) 
         res.json(rows[0])
     } catch (error) {
         return res.status(500).json({message: error.message})
@@ -22,19 +22,20 @@ export const getUser = async(req, res) => {
 }
 
 export const createUser = async (req, res) => {
-    const {name, email, password} = req.body
+    const {identificacion, nombres, correo, clave} = req.body
 
     try {
         
-        const passwordHash = await bcrypt.hash(password, 10)
-        const [rows] = await pool.query('INSERT INTO `users` (`name`, `email`, `password`) VALUES(?,?,?)',[name, email, passwordHash])
+        const passwordHash = await bcrypt.hash(clave, 10)
+        const [rows] = await pool.query('INSERT INTO `clientes` (`identificacion`, `nombres`, `correo`, `clave`) VALUES(?,?,?,?)',[identificacion, nombres, correo, passwordHash])
         const token =  await createAccessToken(rows.insertId)
         res.cookie('token', token)
         res.send({
-            id:rows.insertId,
-            name,
-            email,
-            password
+            cliente_id:rows.insertId,
+            identificacion, 
+            nombres, 
+            correo, 
+            clave
         })
     } catch (error) {
         return res.status(500).json({message: error.message})
@@ -43,8 +44,8 @@ export const createUser = async (req, res) => {
 
 export const deleteUser = async(req, res) =>{
     try {
-        const [rows] =await pool.query('DELETE FROM `users` WHERE id = ?',[req.params.id])
-        if(rows.affectedRows <= 0)return res.status(404).json({message: `No se pudo eliminar ningun usuario por el id: ${req.params.id}`})
+        const [rows] =await pool.query('DELETE FROM `clientes` WHERE cliente_id = ?',[req.params.cliente_id])
+        if(rows.affectedRows <= 0)return res.status(404).json({message: `No se pudo eliminar ningun usuario por el id: ${req.params.cliente_id}`})
         res.send('Usuario eliminado')
     } catch (error) {
         return res.status(500).json({message: error.message})
@@ -52,13 +53,13 @@ export const deleteUser = async(req, res) =>{
 }
 
 export const updateUser = async (req, res) =>{
-    const {id} =req.params
-    const {name, email, password} = req.body
+    const {cliente_id} =req.params
+    const {identificacion, nombres, correo, clave, id_rol} = req.body
 
     try {
-        const [result] = await pool.query('UPDATE `users` SET `name`= IFNULL(?,name), `email`= IFNULL(?,email), `password`= IFNULL(?,password) WHERE id = ?',[name, email, password, id])
-        if(result.affectedRows === 0) return res.status(404).json({message: `No se pudo actualizar ningun usuario por el id: ${req.params.id}`})
-        const [rows] = await pool.query('SELECT * FROM `users` WHERE id = ?',[id])
+        const [result] = await pool.query('UPDATE `clientes` SET `identificacion`= IFNULL(?,identificacion), `nombres`= IFNULL(?,nombres), `correo`= IFNULL(?,correo), `clave`= IFNULL(?,clave), `id_rol`= IFNULL(?,id_rol) WHERE cliente_id = ?',[identificacion, nombres, correo, clave, id_rol, cliente_id])
+        if(result.affectedRows === 0) return res.status(404).json({message: `No se pudo actualizar ningun usuario por el id: ${req.params.cliente_id}`})
+        const [rows] = await pool.query('SELECT * FROM `clientes` WHERE cliente_id = ?',[cliente_id])
         res.json(rows[0])
     } catch (error) {
         return res.status(500).json({message: error.message})
@@ -66,21 +67,21 @@ export const updateUser = async (req, res) =>{
 }
 
 export const loginUser = async (req, res) => {
-    const {email, password} = req.body
+    const {correo, clave} = req.body
 
     try {
-        const [userFound] = await pool.query('SELECT * FROM `users` WHERE email = ?',[email])
-        if(userFound.length <= 0)return res.status(404).json({message: `No se encontro ningun usuario por el email: ${email}`})
+        const [userFound] = await pool.query('SELECT * FROM `clientes` WHERE correo = ?',[correo])
+        if(userFound.length <= 0)return res.status(404).json({message: `No se encontro ningun usuario por el email: ${correo}`})
         
-        const isMatch = await bcrypt.compare(password, userFound[0].password)
-        if(!isMatch)return res.status(404).json({message: `Password incorrecta`})
+        const isMatch = await bcrypt.compare(clave, userFound[0].clave)
+        if(!isMatch)return res.status(404).json({message: `Contraseña incorrecta`})
         
-        const token =  await createAccessToken(userFound[0].id)
+        const token =  await createAccessToken(userFound[0].cliente_id)
         res.cookie('token', token)
         res.send({
-            id:userFound[0].id,
-            email,
-            password
+            id:userFound[0].cliente_id,
+            correo,
+            clave
         })
     } catch (error) {
         return res.status(500).json({message: error.message})
