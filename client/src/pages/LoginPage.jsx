@@ -1,13 +1,12 @@
-import { useForm } from "react-hook-form";
-import { resgiterRequest } from "../api/auth";
+import { useForm } from 'react-hook-form'
+import {resgiterRequest} from "../api/auth";
 
-function LoginPage() {
-  const { register, handleSubmit } = useForm();
-  const onSubmit = handleSubmit(async (values) => {
-    const res = await resgiterRequest(values);
-    console.log(res);
-  });
-
+function RegisterPage() {
+    const {register,handleSubmit} = useForm();
+    const onSubmit=handleSubmit(async(values)=>{
+      const res = await resgiterRequest(values)
+      console.log(res);
+    })
   return (
     <div className="min-h-screen flex items-center justify-center relative">
       <img
@@ -108,7 +107,7 @@ function LoginPage() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default LoginPage;
+export default RegisterPage
