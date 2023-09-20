@@ -1,4 +1,5 @@
 import express from 'express';
+import cookieParser from "cookie-parser";
 import usersRoutes from './routes/users.routes.js';
 import indexRoutes from './routes/index.routes.js';
 import roomsRoutes from './routes/rooms.routes.js';
@@ -16,6 +17,7 @@ app.use(cors(
     }
 ))
 app.use(express.json())
+app.use(cookieParser());
 app.use('/api',usersRoutes)
 app.use('/api',indexRoutes)
 app.use('/api',rolesRoutes)

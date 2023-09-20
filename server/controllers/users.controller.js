@@ -22,24 +22,53 @@ export const getUser = async(req, res) => {
 }
 
 export const createUser = async (req, res) => {
-    const {identificacion, nombres, correo, clave} = req.body
-
+    const { identificacion, nombres, correo, clave } = req.body;
+  
     try {
-        
-        const passwordHash = await bcrypt.hash(clave, 10)
-        const [rows] = await pool.query('INSERT INTO `clientes` (`identificacion`, `nombres`, `correo`, `clave`) VALUES(?,?,?,?)',[identificacion, nombres, correo, passwordHash])
-        const token =  await createAccessToken(rows.insertId)
-        res.cookie('token', token)
-        res.send({
-            cliente_id:rows.insertId,
-            identificacion, 
-            nombres, 
-            correo, 
-        })
+     // Verificar si ya existe un usuario con la misma identificación
+    const [existingIdentificacion] = await pool.query(
+        'SELECT * FROM `clientes` WHERE `identificacion` = ?',
+        [identificacion]
+      );
+  
+      if (existingIdentificacion.length > 0) {
+        return res.status(400).json({
+          message: 'Ya existe un usuario con la misma identificación.',
+        });
+      }
+  
+      // Verificar si ya existe un usuario con el mismo correo
+      const [existingCorreo] = await pool.query(
+        'SELECT * FROM `clientes` WHERE `correo` = ?',
+        [correo]
+      );
+  
+      if (existingCorreo.length > 0) {
+        return res.status(400).json({
+          message: 'Ya existe un usuario con el mismo correo.',
+        });
+      }
+  
+      // Si no existe, continuar con la inserción
+      const passwordHash = await bcrypt.hash(clave, 10);
+      const [rows] = await pool.query(
+        'INSERT INTO `clientes` (`identificacion`, `nombres`, `correo`, `clave`) VALUES(?,?,?,?)',
+        [identificacion, nombres, correo, passwordHash]
+      );
+  
+      const token = await createAccessToken(rows.insertId);
+      res.cookie('token', token);
+      res.send({
+        cliente_id: rows.insertId,
+        identificacion,
+        nombres,
+        correo,
+      });
     } catch (error) {
-        return res.status(500).json({message: error.message})
+      return res.status(500).json({ message: error.message });
     }
-}
+  };
+  
 
 export const deleteUser = async(req, res) =>{
     try {
@@ -80,7 +109,6 @@ export const loginUser = async (req, res) => {
         res.send({
             id:userFound[0].cliente_id,
             correo,
-            clave
         })
     } catch (error) {
         return res.status(500).json({message: error.message})

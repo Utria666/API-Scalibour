@@ -1,12 +1,24 @@
-import { useForm } from 'react-hook-form'
-import {resgiterRequest} from "../api/auth";
+import { useForm } from "react-hook-form";
+import { useAuth } from "../context/AuthContext";
+import { useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 
-function RegisterPage() {
-    const {register,handleSubmit} = useForm();
-    const onSubmit=handleSubmit(async(values)=>{
-      const res = await resgiterRequest(values)
-      console.log(res);
-    })
+function LoginPage() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  const { signin, isAuthenticated, errors: loginErrors } = useAuth();
+  const Navigate = useNavigate();
+
+  useEffect(() => {
+    if (isAuthenticated) Navigate("/");
+  }, [isAuthenticated]);
+
+  const onSubmit = handleSubmit(async (data) => {
+    signin(data);
+  });
   return (
     <div className="min-h-screen flex items-center justify-center relative">
       <img
@@ -30,7 +42,26 @@ function RegisterPage() {
                       SCALIBOUR
                     </h4>
                   </div>
-
+                  {loginErrors && (
+                    <div
+                      className="flex items-center p-4 mb-4 text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+                      role="alert"
+                    >
+                      <svg
+                        className="flex-shrink-0 w-4 h-4"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+                      </svg>
+                      <span className="sr-only">Info</span>
+                      <div className="ml-3 text-sm font-medium">
+                        {loginErrors}
+                      </div>
+                    </div>
+                  )}
                   <form onSubmit={onSubmit}>
                     <div className="grid  gap-10">
                       <div className="grid  gap-4">
@@ -49,16 +80,28 @@ function RegisterPage() {
                           </div>
                           <input
                             type="text"
-                            {...register("email",{required:true})}
-                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            placeholder="ejemplo@ejemplo.com"
+                            {...register("correo", {
+                              required: "El correo es obligatorio",
+                            })}
+                            className={` border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${
+                              errors.correo ? "border-red-500" : ""
+                            }`}
                           />
                         </div>
                         <div className="relative">
                           <input
-                            type="text"
-                            {...register("password",{required:true})}
-                            className="block px-2.5 pb-2.5 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                            type="password"
+                            {...register("clave", {
+                              required: "La contraseña es requerida",
+                              pattern: {
+                                value: /^(?=.*[A-Z])(?=.*[a-zA-Z0-9]).{8,}$/,
+                                message:
+                                  "La contraseña debe tener al menos 8 caracteres, una mayúscula y un número",
+                              },
+                            })}
+                            className={`block px-2.5 pb-2.5 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 ${
+                              errors.clave ? "border-red-500" : ""
+                            }`}
                             placeholder="*********"
                           />
                           <label className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">
@@ -66,7 +109,35 @@ function RegisterPage() {
                           </label>
                         </div>
                       </div>
-
+                      {Object.keys(errors).length > 0 && (
+                        <div
+                          className="flex p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+                          role="alert"
+                        >
+                          <svg
+                            className="flex-shrink-0 inline w-4 h-4 mr-3 mt-[2px]"
+                            aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+                          </svg>
+                          <span className="sr-only">Danger</span>
+                          <div>
+                            <span className="font-medium">
+                              Por favor, corrige los siguientes errores:
+                            </span>
+                            <ul className="mt-1.5 ml-4 list-disc list-inside">
+                              {Object.keys(errors).map((errorKey) => (
+                                <li key={errorKey}>
+                                  {errors[errorKey].message}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+                      )}
                       <div className="flex items-center justify-between pb-6">
                         <a
                           href="#"
@@ -107,7 +178,7 @@ function RegisterPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default RegisterPage
+export default LoginPage;
