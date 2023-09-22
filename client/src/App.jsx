@@ -10,6 +10,7 @@ import RegisterPage from "./pages/RegisterPage";
 import HomePage from "./pages/HomePage";
 import RoomTypesPage from "./pages/RoomTypesPage";
 import RoomsPage from "./pages/RoomsPage";
+import RoomPage from "./pages/RoomPage";
 import UsersPage from "./pages/UsersPage";
 import BookingsPage from "./pages/BookingsPage";
 import ProtectedRoute from "./ProtectedRoute";
@@ -29,6 +30,7 @@ export default function App() {
                 <Route element={<ProtectedRoute />}>
                   <Route path="/roomTypes" element={<RoomTypesPage />} />
                   <Route path="/rooms" element={<RoomsPage />} />
+                  <Route path="/room/:id" element={<RoomPage />} />
                   <Route path="/users" element={<UsersPage />} />
                   <Route path="/bookings" element={<BookingsPage />} />
                 </Route>
