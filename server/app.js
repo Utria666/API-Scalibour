@@ -7,17 +7,20 @@ import roomTypesRoutes from './routes/roomTypes.routes.js';
 import rolesRoutes from './routes/roles.routes.js';
 import roomStatusRoutes from './routes/roomStatus.routes.js';
 import bookingsRoutes from './routes/bookings.routes.js'
+import authRoutes from './routes/auth.routes.js';
 import cors from 'cors';
 
 const app = express();
 
 app.use(cors(
     {
-        origin: 'http://localhost:5173'
+        origin: 'http://localhost:5173',
+        credentials: true
     }
 ))
 app.use(express.json())
 app.use(cookieParser());
+app.use('/api/auth',authRoutes)
 app.use('/api',usersRoutes)
 app.use('/api',indexRoutes)
 app.use('/api',rolesRoutes)

@@ -19,19 +19,5 @@ export const tokenExists  = (req, res, next) => {
   }
 };
 
-export const isAdmin = (req, res, next) => {
-    try {
-      // Verificar si el token existe utilizando tokenExists
-      tokenExists(req, res, () => {
-        if (req.user && req.user.rol === 1) {
-          // El usuario es administrador
-          next();
-        } else {
-          res.status(403).json({ message: "No tienes permisos de administrador" });
-        }
-      });
-    } catch (error) {
-      res.status(500).json({ message: "Error en la verificación de administrador" });
-    }
-  };
-  
+
+
