@@ -4,6 +4,7 @@ import { UserProvider } from "./context/UsersContext";
 import { RoomTypesProvider } from "./context/RoomTypesContext";
 import { RoomProvider } from "./context/RoomContext";
 
+import Dashboard from "./pages/Dashboard";
 import LoginPage from "./pages/LoginPage";
 import NotFound from "./pages/NotFound";
 import RegisterPage from "./pages/RegisterPage";
@@ -23,10 +24,11 @@ export default function App() {
           <RoomProvider>
             <BrowserRouter>
               <Routes>
-                <Route path="/" element="hola"></Route>
+                <Route path="/" element={<HomePage />} />
                 <Route path="*" element={<NotFound />} />
                 <Route path="/login" element={<LoginPage />} />
-                <Route path="/register" element={<RegisterPage />} />
+                <Route path="/register" element={<RegisterPage />} />            
+                  <Route path="Dashboard" element={<Dashboard />} />
                 <Route element={<ProtectedRoute />}>
                   <Route path="/roomTypes" element={<RoomTypesPage />} />
                   <Route path="/rooms" element={<RoomsPage />} />

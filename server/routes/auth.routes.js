@@ -1,10 +1,9 @@
 import { Router } from "express";
 
-import { tokenExists } from "../middlewares/validateToken.js";
 
 const router = Router();
 
-router.get("/verify", tokenExists, (req, res) => {
+router.get("/verify", (req, res) => {
   if (req.user) {
     res.send(true);
   } else {
