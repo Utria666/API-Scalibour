@@ -1,9 +1,13 @@
 import { useNavigate } from 'react-router-dom';
 
-function Button({ texto, className, to, disabled }) {
+function Button({ texto, className, to, disabled ,onClick}) {
   let navigate = useNavigate();
 
   const handleClick = () => {
+    if (onClick) {
+      onClick();
+    }
+
     if (to && !disabled) {
       navigate(to);
     }
