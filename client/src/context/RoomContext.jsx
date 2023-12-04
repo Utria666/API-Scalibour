@@ -1,5 +1,5 @@
-import { createContext, useContext, useState } from "react";
-import { getRoomsAvailableRequest } from "../api/room";
+import { createContext, useContext, useState, useMemo } from "react";
+import { getRoomsAvailableRequest,getRoomsRequest } from "../api/room";
 
 const RoomContext = createContext();
 
@@ -12,20 +12,41 @@ export const useRoom = () => {
 };
 
 export function RoomProvider({ children }) {
-  const [room, setRoom] = useState([]);
+  const [rooms, setRooms] = useState([]);
+  const [error, setError] = useState(null);
+
+  const getRooms= async () => {
+    try {
+      const res = await getRoomsRequest();
+      setRooms(res.data);
+      setError(null);
+    } catch (error) {
+      setError(error.message);
+    }
+  };
 
   const getRoomsAvailable = async () => {
     try {
       const res = await getRoomsAvailableRequest();
-      setRoom(res.data);
-      console.log(res.data);
+      setRooms(res.data);
+      setError(null);
     } catch (error) {
-      console.log(error);
+      setError(error.message);
     }
   };
 
+  const value = useMemo(
+    () => ({
+      rooms,
+      getRoomsAvailable,
+      getRooms,
+      error,
+    }),
+    [rooms, error]
+  );
+
   return (
-    <RoomContext.Provider value={{ room, getRoomsAvailable }}>
+    <RoomContext.Provider value={value}>
       {children}
     </RoomContext.Provider>
   );

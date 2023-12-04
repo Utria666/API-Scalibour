@@ -1,11 +1,11 @@
-import { createContext, useContext, useState, useMemo } from 'react';
+import { createContext, useContext, useState, useMemo } from "react";
 import {
   getRoomTypesRequest,
   getRoomTypeRequest,
   createRoomTypeRequest,
   updateRoomTypeRequest,
-  deleteRoomTypeRequest
-} from '../api/roomTypes';
+  deleteRoomTypeRequest,
+} from "../api/roomTypes";
 
 const RoomTypesContext = createContext();
 
@@ -53,7 +53,7 @@ export function RoomTypesProvider({ children }) {
   const updateRoomType = async (id, updatedRoomType) => {
     try {
       const res = await updateRoomTypeRequest(id, updatedRoomType);
-      setRoomTypes(roomTypes.map(rt => rt.id === id ? res.data : rt));
+      setRoomTypes(roomTypes.map((rt) => (rt.id === id ? res.data : rt)));
       setError(null);
     } catch (error) {
       setError(error.message);
@@ -63,22 +63,25 @@ export function RoomTypesProvider({ children }) {
   const deleteRoomType = async (id) => {
     try {
       await deleteRoomTypeRequest(id);
-      setRoomTypes(roomTypes.filter(rt => rt.id !== id));
+      setRoomTypes(roomTypes.filter((rt) => rt.id !== id));
       setError(null);
     } catch (error) {
       setError(error.message);
     }
   };
 
-  const value = useMemo(() => ({
-    roomTypes,
-    getRoomTypes,
-    getRoomType,
-    createRoomType,
-    updateRoomType,
-    deleteRoomType,
-    error
-  }), [roomTypes, error]);
+  const value = useMemo(
+    () => ({
+      roomTypes,
+      getRoomTypes,
+      getRoomType,
+      createRoomType,
+      updateRoomType,
+      deleteRoomType,
+      error,
+    }),
+    [roomTypes, error]
+  );
 
   return (
     <RoomTypesContext.Provider value={value}>

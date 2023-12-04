@@ -1,47 +1,110 @@
-import React, { useEffect, useState } from "react";
+import SimpleTable from "../components/Dashboard/SimpleTable";
 import { useRoom } from "../context/RoomContext";
-import RoomCard from "../components/RoomCard";
-import imgCarusel1 from "../assets/carusel1.webp";
+import { useEffect, useState,useMemo  } from "react";
 
-const images = [imgCarusel1, imgCarusel1, imgCarusel1];
-
-function ClientRoomsView() {
-  const { room, getRoomsAvailable } = useRoom();
-  const [expandedCardId, setExpandedCardId] = useState(null);
+function RoomsPage() {
+  const {rooms,getRooms} = useRoom();
+  const [isLoading,setIsLoading] = useState(false);
+  const [error,setError] = useState(null);
 
   useEffect(() => {
-    getRoomsAvailable();
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        await getRooms();
+      } catch (error) {
+        setError(error.message);
+      }
+      setIsLoading(false)
+    };
+
+    fetchData();
   }, []);
 
-  const roomsByType = {};
-  room.forEach((room) => {
-    if (!roomsByType[room.nombre_tipo_habitacion]) {
-      roomsByType[room.nombre_tipo_habitacion] = room;
-    }
-  });
+ 
+  const data = useMemo(
+    ()=>
+    rooms.map((rooms)=> ({
+      ID: rooms.habitacion_Id,
+      numero: rooms.numero_habitacion, 
+      estado: rooms.nombre,
+      tipoHabitacion: rooms.nombre_tipo_habitacion,
+      descripcion: rooms.descripcion,
+      precio: rooms.precio_base,
+      capacidad: rooms.capacidad,
+    })),
+    [rooms]
+  )
 
-  const handleCardClick = (cardId) => {
-    if (expandedCardId === cardId) {
-      setExpandedCardId(null); // Cerrar la tarjeta si se hace clic en la que ya está expandida.
-    } else {
-      setExpandedCardId(cardId); // Expandir la tarjeta que se hizo clic.
-    }
-  };
+  if (isLoading) return <p>Cargando...</p>;
+  if (error) return <p>Error: {error}</p>;
 
+  const columns = [
+    {
+      header: "ID",
+      accessorKey: "ID",
+    },
+    {
+      header: "Numero",
+      accessorKey: "numero",
+    },
+    {
+      header: "Estado",
+      accessorKey: "estado",
+    },
+    {
+      header: "Capacidad",
+      accessorKey: "capacidad",
+    },
+    {
+      header: "Tipo de habitacion",
+      accessorKey: "tipoHabitacion",
+    },
+    {
+      header: "Descripcion",
+      accessorKey: "descripcion",
+    },
+    {
+      header: "Precio",
+      accessorKey: "precio",
+    },
+  ];
+
+  const formFields = [
+    {
+      id: "Identificacion",
+      label: "Identificacion",
+      type: "text",
+      placeholder: "123456789",
+    },
+    {
+      id: "Nombre",
+      label: "Nombre",
+      type: "text",
+      placeholder: "Ejemplo",
+    },
+    {
+      id: "Email",
+      label: "Emial",
+      type: "email",
+      placeholder: "ejemplo@ejemplo.com",
+    },
+    {
+      id: "Contraseña",
+      label: "Contraseña",
+      type: "password",
+      placeholder: "",
+    },
+  ];
   return (
-    <div className="overflow-y-auto h-screen">
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4 mx-4">
-        {Object.values(roomsByType).map((roomItem) => (
-          <RoomCard
-            key={roomItem.habitacion_Id}
-            room={roomItem}
-            isExpanded={expandedCardId === roomItem.habitacion_Id}
-            onCardClick={handleCardClick}
-          />
-        ))}
-      </div>
-    </div>
+    <SimpleTable
+      data={data}
+      columns={columns}
+      title={"Habitaciones"}
+      formFields={formFields}
+      modalTitle={"Crear Habitaciones"}
+      />
   );
 }
 
-export default ClientRoomsView;
+export default RoomsPage

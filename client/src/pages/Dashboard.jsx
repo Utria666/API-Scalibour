@@ -2,6 +2,7 @@
 import Sidebar from "../components/Dashboard/Sidebar";
 import UsersPage from "../pages/UsersPage";
 import RoomTypesPage from "../pages/RoomTypesPage";
+import RoomsPage from "../pages/RoomsPage";
 
 function Dashboard() {
   return (
@@ -9,6 +10,7 @@ function Dashboard() {
       <Sidebar></Sidebar>
       <div className="flex flex-col bg-black text-white">
         <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6">
+          <RoomsPage></RoomsPage>
          <UsersPage></UsersPage>
          <RoomTypesPage></RoomTypesPage>
         </main>

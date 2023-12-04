@@ -47,13 +47,13 @@ function RoomTypesPage() {
       id: "Precio",
       label: "Precio",
       type: "text",
-      placeholder: "XXXXXXX",
+      placeholder: "0",
     },
     {
       id: "Capacidad",
       label: "Capacidad",
       type: "number",
-      placeholder: "XX",
+      placeholder: "0",
     },
   ];
 
@@ -93,7 +93,7 @@ function RoomTypesPage() {
         columns={columns} 
         title={"Tipos de habitaciones"}
         formFields={formFields} 
-        modalTitle={"Crear Usuario"}
+        modalTitle={"Crear Habitacion"}
       />
     </div>
   );

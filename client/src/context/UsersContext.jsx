@@ -1,42 +1,56 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useMemo } from "react";
 import { getUsersRequest, createUserRequest } from "../api/users";
 
 const UserContext = createContext();
 
 export const useUser = () => {
   const context = useContext(UserContext);
-
   if (!context) {
     throw new Error("useUser must be used within an UserProvider");
   }
-
   return context;
 };
 
 export function UserProvider({ children }) {
-  const [users, setUsers] = useState([]); // Cambiar user a users
+  const [users, setUsers] = useState([]);
+  const [error, setError] = useState();
 
   const getUsers = async () => {
     try {
       const res = await getUsersRequest();
       setUsers(res.data);
-      console.log(res);
+      setError(null);
     } catch (error) {
-      console.log(error);
+      setError(error.message);
     }
   };
 
   const createUser = async (user) => {
     try {
-        const res = await createUserRequest(user);
-        console.log(res);
+      const res = await createUserRequest(user);
+      setUsers(res.data);
+      setError(null);
+      console.log(res);
     } catch (error) {
-        console.log(error); 
+      setError(error.response.data.message);
+      console.log(error.response.data.message);
     }
   };
+
+  const value = useMemo(
+    () => ({
+      users,
+      getUsers,
+      createUser,
+      error,
+    }),
+    [users, error]
+  );
+
   return (
-    <UserContext.Provider value={{ users, createUser, getUsers }}>
+    <UserContext.Provider value={value}>
       {children}
     </UserContext.Provider>
   );
 }
+

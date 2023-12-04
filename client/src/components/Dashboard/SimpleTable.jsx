@@ -11,7 +11,7 @@ import Button from "../common/Button";
 import Modal from "../common/Modal";
 import CreateForm from "../common/CreateForm";
 
-function SimpleTable({ data, columns , title ,formFields, modalTitle }) {
+function SimpleTable({ data, columns , title ,formFields, modalTitle , onSubmit }) {
   const [sorting, setSorting] = useState([]);
   const [filtering, SetFiltering] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -35,11 +35,6 @@ function SimpleTable({ data, columns , title ,formFields, modalTitle }) {
 
   const closeModal = () => setIsModalOpen(false);
 
-  const handleSubmit = (formData) => {
-    console.log("Datos del formulario:", formData);
-    closeModal();
-  };
-
   return (
     <div className="overflow-x-auto relative shadow-md sm:rounded-lg bg-black rounded-xl">
       <div className="p-5 flex justify-between items-center">
@@ -56,7 +51,7 @@ function SimpleTable({ data, columns , title ,formFields, modalTitle }) {
             />
           </div>
           <Button
-            texto="Crear Usuario"
+            texto={modalTitle}
             className="ring-offset-background border bg-background hover:bg-accent hover:text-accent-foreground border-violet-700 text-violet-500 hover:bg-violet-700 hover:text-violet-100"
             onClick={openModal}
           />
@@ -137,7 +132,7 @@ function SimpleTable({ data, columns , title ,formFields, modalTitle }) {
         <Modal title={modalTitle} onClose={closeModal}>
           <CreateForm
             onClose={closeModal}
-            onSubmit={handleSubmit}
+            onSubmit={onSubmit || (() => {})}
             fields={formFields }
           />
         </Modal>
