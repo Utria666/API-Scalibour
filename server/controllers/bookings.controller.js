@@ -1,5 +1,6 @@
 import {pool} from '../db.js'
 
+
 export const getBookings = async(req, res) => {
     try{
         const [rows] = await pool.query('SELECT reservas.reservas_id, reservas.fecha_creacion_reserva, reservas.inicio_reserva, reservas.final_reserva, habitaciones.numero_habitacion, clientes.identificacion, clientes.nombres FROM reservas INNER JOIN habitaciones ON reservas.habitacion_id = habitaciones.habitacion_id INNER JOIN clientes ON reservas.cliente_id = clientes.cliente_id ORDER BY reservas.reservas_id ASC;')
