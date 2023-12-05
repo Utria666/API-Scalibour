@@ -1,8 +1,8 @@
-//Importa la conexion con BD
+//Importa la conexion con BD, esto para que se comuniquen mutuamente
 import {pool} from '../db.js'
 
 
-//Metodo para obtener todos los datos de la tabla "rol"
+//Intenta obtener con un try dentro de una funcion flecha, todos los datos de la tabla "rol", usa un select y los ordena de forma ascendente
 export const getRoles = async(req, res) => {
     try {
         const [rows] = await pool.query('SELECT * FROM `rol` ORDER BY `rol`.`id_rol` ASC')
@@ -13,7 +13,7 @@ export const getRoles = async(req, res) => {
 }
 
 
-//Obtiene un rol especifico de acuerdo a su identificador
+//Intenta responder con un objeto unico de rol con un parametro, en este caso siendo por el id_rol la informacion a filtrar, en caso de que no se encuentre retornara un caso de error
 export const getRole = async(req, res) => {
     try {
         const [rows] =await pool.query('SELECT * FROM `rol` WHERE id_rol = ?',[req.params.id_rol]);
@@ -23,9 +23,8 @@ export const getRole = async(req, res) => {
         return res.status(500).json({message: error.message})
     }
 }
-
-
-//Crea un rol pasandole en el body el nombre de este nuevo
+ 
+//Creara un rol nuevo colocandole como parametro unico el metodo del rol y esta informacion de entrada se debe introducir mediante el cuerpo de la solicitud que se le hace a la api
 export const createRole = async (req, res) => {
 
     const {nombre_rol} = req.body
@@ -42,7 +41,7 @@ export const createRole = async (req, res) => {
 }
 
 
-//Actualiza el rol especifico por el "id_rol" y en caso de no haber modificaciones en una columna la deja igual
+//Solicita un identificador para identificar que objeto afectar/actualizar y tambien solicita los valores a remplazar para que sean insertados en el cuerpo de la peticion. Posterior a esto se realiza un SELECT mostrando los cambios realizados
 export const updateRole = async (req, res) => {
     const {id_rol} = req.params; 
     const {nombre_rol} = req.body;
@@ -58,7 +57,7 @@ export const updateRole = async (req, res) => {
 }
 
 
-//Elimina un rol por su id
+//En la solicitud solictia un id para poder eliminar un registro, usa un DELETE y devuelve un mensaje confirmado si 
 export const deleteRole = async (req, res) => {
     try {
         const [rows] = await pool.query('DELETE FROM `rol` WHERE id_rol = ?', [req.params.id_rol])
