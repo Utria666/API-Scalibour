@@ -24,9 +24,9 @@ function Sidebar() {
         <nav className="grid items-start px-4 text-sm font-medium">
             <SidebarLink icon={<IconHome />} text="Home" to="#" />
             <SidebarLink icon={<IconCalendar />} text="Reservations" to="#" isHighlighted={true} />
-            <SidebarLink icon={<IconUsers />} text="Customers" to="#" />
-            <SidebarLink icon={<IconLinechart />} text="Reports" to="#" />
-            <SidebarLink icon={<IconSettings />} text="Settings" to="#" />
+            <SidebarLink icon={<IconUsers />} text="Customers" to="/dashboard/users" />
+            <SidebarLink icon={<IconLinechart />} text="Reports" to="/dashboard/room-types" />
+            <SidebarLink icon={<IconSettings />} text="Settings" to="/dashboard/rooms" />
           </nav>
         </div>
       </div>
