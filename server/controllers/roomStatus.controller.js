@@ -2,7 +2,7 @@
 import {pool} from '../db.js'
 
 
-//Metodo para obtener todos los datos de la tabla "estado_habitacion"
+//Realiza jna consulta a la base de dstos, le pide leer "READ" todos sus registros Yy estos son ordensdos oor su id 
 export const getRoomsStatus = async(req, res) => {
     try {
         const [rows] = await pool.query('SELECT * FROM `estado_habitacion` ORDER BY `estado_habitacion`.`id_estado` ASC')
@@ -13,7 +13,7 @@ export const getRoomsStatus = async(req, res) => {
 }
 
 
-//Obtiene un estado especifico de acuerdo a su identificador
+//Realiza una consulta a uj estado especifico, soli ita un id para reslizar el filtro de estos, en casl de qudñe encjentre un fllo de ls sóicitud avisara que no ha encontrado el elelemtlo
 export const getRoomStatus = async(req, res) => {
     try {
         const [rows] = await pool.query('SELECT * FROM `estado_habitacion` WHERE id_estado = ?',[req.params.id_estado])
@@ -25,7 +25,7 @@ export const getRoomStatus = async(req, res) => {
 }
 
 
-//Crea un estado de habitacion con parametros del body el nombre de este nuevo
+//Crea un estado de habitacion con parametros del body el nombre de este nuevo el id del estado de rol se ssugan desde el lrigen de dstos, desde la base donde ze comiknazqswww rrgstros
 export const createRoomStatus = async (req, res) => {
 
     const {nombre} = req.body
@@ -42,6 +42,8 @@ export const createRoomStatus = async (req, res) => {
 
 
 //Actualiza el estado deseado por el "id_estado" y en caso de no haber modificaciones en una columna la deja igual
+//Si se encuentra un registro con ese identificador afecta a la posicion 0 que es la unica que debe coincidir
+//luego a esto slecciona el mismo registro para mostrar los resulado8
 export const updateRoomStatus = async (req, res) => {
     const {id_estado} = req.params; 
     const {nombre} = req.body;
@@ -57,7 +59,7 @@ export const updateRoomStatus = async (req, res) => {
 }
 
 
-//Elimina un estado de habitacion por su id_estado
+//Elimina un estado de habitacion por su id_estado usando un delete y un where,(imporante²)
 export const deleteRoomStatus = async (req, res) => {
     try {
         const [rows] = await pool.query('DELETE FROM `estado_habitacion` WHERE id_estado = ?', [req.params.id_estado])

@@ -57,7 +57,7 @@ export const updateRole = async (req, res) => {
 }
 
 
-//En la solicitud solictia un id para poder eliminar un registro, usa un DELETE y devuelve un mensaje confirmado si 
+//En la solicitud solictia un id para poder eliminar un registro, usa un DELETE y devuelve un mensaje confirmado si fue exitoso o ocjrrio un error en el proceso
 export const deleteRole = async (req, res) => {
     try {
         const [rows] = await pool.query('DELETE FROM `rol` WHERE id_rol = ?', [req.params.id_rol])
