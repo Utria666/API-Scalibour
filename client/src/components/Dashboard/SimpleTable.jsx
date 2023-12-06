@@ -10,11 +10,22 @@ import {
 import Button from "../common/Button";
 import Modal from "../common/Modal";
 import CreateForm from "../common/CreateForm";
+import ModalUpdate from "../common/ModalUpdate";
 
-function SimpleTable({ data, columns , title ,formFields, modalTitle , onSubmit }) {
+function SimpleTable({
+  data,
+  columns,
+  title,
+  formFields,
+  modalTitle,
+  onSubmit,
+  serverError,
+}) {
   const [sorting, setSorting] = useState([]);
   const [filtering, SetFiltering] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [selectedUserForUpdate, setSelectedUserForUpdate] = useState(null);
 
   const table = useReactTable({
     data,
@@ -30,6 +41,11 @@ function SimpleTable({ data, columns , title ,formFields, modalTitle , onSubmit 
     onSortingChange: setSorting,
     onGlobalFilterChange: SetFiltering,
   });
+
+  const openUpdateModal = (userData) => {
+    setSelectedUserForUpdate(userData);
+    setIsUpdateModalOpen(true);
+  };
 
   const openModal = () => setIsModalOpen(true);
 
@@ -80,6 +96,8 @@ function SimpleTable({ data, columns , title ,formFields, modalTitle , onSubmit 
                     }
                   </th>
                 ))}
+                {/* Elimina el </th> adicional aquí */}
+                <th className="py-3 px-6">Acciones</th>
               </tr>
             ))}
           </thead>
@@ -98,6 +116,26 @@ function SimpleTable({ data, columns , title ,formFields, modalTitle , onSubmit 
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
                 ))}
+                <td className="py-4 px-6">
+                  <Button
+                    texto="Editar"
+                    className={`mx-1 ring-offset-background border bg-background hover:bg-accent hover:text-accent-foreground ${
+                      index % 2 === 0
+                        ? "bg-black border-b border-violet-700"
+                        : "bg-black border-b border-black "
+                    }`}
+                    onClick={openUpdateModal}
+                  />
+                  <Button
+                    texto="Eliminar"
+                    className={`mx-1 ring-offset-background border bg-background hover:bg-accent hover:text-accent-foreground ${
+                      index % 2 === 0
+                        ? "bg-black border-b border-violet-700"
+                        : "bg-black border-b border-black "
+                    }`}
+                    onClick={""}
+                  />
+                </td>
               </tr>
             ))}
           </tbody>
@@ -132,10 +170,27 @@ function SimpleTable({ data, columns , title ,formFields, modalTitle , onSubmit 
         <Modal title={modalTitle} onClose={closeModal}>
           <CreateForm
             onClose={closeModal}
-            onSubmit={onSubmit || (() => {})}
-            fields={formFields }
+            onSubmit={(formData) => {
+              const isSuccessful = onSubmit(formData);
+              if (isSuccessful) {
+                closeModal();
+              }
+            }}
+            fields={formFields}
+            serverError={serverError}
           />
         </Modal>
+      )}
+      {isUpdateModalOpen && (
+        <ModalUpdate
+          title="Actualizar Usuario"
+          user={selectedUserForUpdate}
+          onUpdate={("")}
+          onClose={() => {
+            setSelectedUserForUpdate(null);
+            setIsUpdateModalOpen(false);
+          }}
+        />
       )}
     </div>
   );

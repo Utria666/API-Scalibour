@@ -9,23 +9,16 @@ const CreateForm = ({
   buttonClass,
   cancelButtonClass,
   fields = [],
+  serverError,
 }) => {
-  const {
-    control,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm();
-
-
+  const { control, handleSubmit, reset } = useForm();
 
   const handleFormSubmit = async (formData) => {
-
     const isSuccessful = await onSubmit(formData);
-    // if (isSuccessful) {
-    //   reset();
-    //   onClose();
-    // }
+    if (isSuccessful) {
+      reset();
+      onClose();
+    }
   };
 
   return (
@@ -33,26 +26,21 @@ const CreateForm = ({
       className={`bg-black p-4 rounded-lg ${formClass}`}
       onSubmit={handleSubmit(handleFormSubmit)}
     >
-      {Object.keys(errors).length > 0 && (
+      {serverError && (
         <div
           className="flex p-4 mb-4 text-sm rounded-lg bg-red-100 dark:bg-red-800 text-red-700 dark:text-red-300"
           role="alert"
         >
-          <span className="material-icons-outlined mr-3">error_outline</span>
           <div>
             <span className="font-medium">
               Por favor, corrige los siguientes errores:
             </span>
             <ul className="mt-1.5 ml-4 list-disc list-inside text-red-600">
-              {Object.keys(errors).map((errorKey) => (
-                <li key={errorKey}>{errors[errorKey].message}</li>
-              ))}
+              <li>{serverError}</li>
             </ul>
           </div>
         </div>
       )}
-
-
       {fields.map((field) => (
         <Controller
           key={field.id}

@@ -14,7 +14,6 @@ function Dashboard() {
             <Route path="rooms" element={<RoomsPage />} />
             <Route path="users" element={<UsersPage />} />
             <Route path="room-types" element={<RoomTypesPage />} />
-            {/* Agrega más rutas según sea necesario */}
           </Routes>
         </main>
       </div>

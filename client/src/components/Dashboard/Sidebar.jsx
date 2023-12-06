@@ -1,13 +1,15 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 import IconPackage2 from "../icons/IconPackage2";
 import IconHome from "../icons/IconHome";
 import IconCalendar from "../icons/IconCalendar";
 import IconUsers from "../icons/IconUsers";
-import IconLinechart from "../icons/IconLinechart";
-import IconSettings from "../icons/IconSettings";
+import IconRooms from "../icons/IconRooms";
+import IconRoomsTypes from "../icons/IconRoomTypes";
 
 function Sidebar() {
+  const location = useLocation(); // Obtén la ubicación actual usando useLocation()
+
   return (
     <div className="hidden border-r bg-black lg:block dark:bg-gray-800/40">
       <div className="flex flex-col gap-2">
@@ -21,12 +23,37 @@ function Sidebar() {
           </Link>
         </div>
         <div className="flex-1">
-        <nav className="grid items-start px-4 text-sm font-medium">
-            <SidebarLink icon={<IconHome />} text="Home" to="#" />
-            <SidebarLink icon={<IconCalendar />} text="Reservations" to="#" isHighlighted={true} />
-            <SidebarLink icon={<IconUsers />} text="Customers" to="/dashboard/users" />
-            <SidebarLink icon={<IconLinechart />} text="Reports" to="/dashboard/room-types" />
-            <SidebarLink icon={<IconSettings />} text="Settings" to="/dashboard/rooms" />
+          <nav className="grid items-start px-4 text-sm font-medium">
+            <SidebarLink
+              icon={<IconHome />}
+              text="Home"
+              to="/"
+              isHighlighted={location.pathname === "/"}
+            />
+            <SidebarLink
+              icon={<IconCalendar />}
+              text="Reservaciones"
+              to="/reservations"
+              isHighlighted={location.pathname === "/reservations"}
+            />
+            <SidebarLink
+              icon={<IconUsers />}
+              text="Usuarios"
+              to="/dashboard/users"
+              isHighlighted={location.pathname === "/dashboard/users"}
+            />
+            <SidebarLink
+              icon={<IconRooms />}
+              text="Habitaciones"
+              to="/dashboard/rooms"
+              isHighlighted={location.pathname === "/dashboard/rooms"}
+            />
+            <SidebarLink
+              icon={<IconRoomsTypes />}
+              text="Tipos de habitación"
+              to="/dashboard/room-types"
+              isHighlighted={location.pathname === "/dashboard/room-types"}
+            />
           </nav>
         </div>
       </div>

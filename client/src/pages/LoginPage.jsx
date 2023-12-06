@@ -13,7 +13,7 @@ function LoginPage() {
   const Navigate = useNavigate();
 
   useEffect(() => {
-    if (isAuthenticated) Navigate("/");
+    if (isAuthenticated) Navigate("/Dashboard");
   }, [isAuthenticated]);
 
   const onSubmit = handleSubmit(async (data) => {

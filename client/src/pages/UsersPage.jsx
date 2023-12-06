@@ -3,39 +3,17 @@ import SimpleTable from "../components/Dashboard/SimpleTable";
 import { useUser } from "../context/UsersContext";
 
 function UsersPage() {
-  const { createUser, users, getUsers } = useUser();
+  const { createUser, users, getUsers, error } = useUser();
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
- 
-const onSubmit = async (values) => {
-  try {
-    const hola = await createUser(values);
-    // Verificar si la creación fue exitosa
-    if (hola) {
-      console.log("Usuario creado exitosamente");
-    }
-  } catch (error) {
-    // Manejar errores de creación de usuario
-    if (error.response) {
-      // Si la API responde con un error, muestra el mensaje de error en la consola
-      console.log(error.response.data.message);
-    } else {
-      // Manejar otros errores (por ejemplo, errores de red)
-      console.log("Error de red al crear usuario");
-    }
-  }
-};
 
-  
+  const onSubmit = async (values) => {
+    await createUser(values);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
-      try {
-        await getUsers();
-      } catch (error) {
-        setError(error.message);
-      }
+      await getUsers();
       setIsLoading(false);
     };
 
@@ -53,9 +31,6 @@ const onSubmit = async (values) => {
       })),
     [users]
   );
-
-  if (isLoading) return <p>Cargando...</p>;
-  if (error) return <p>Error: {error}</p>;
 
   const columns = [
     {
@@ -78,6 +53,7 @@ const onSubmit = async (values) => {
       header: "Rol",
       accessorKey: "rol",
     },
+    
   ];
 
   const formFields = [
@@ -101,7 +77,7 @@ const onSubmit = async (values) => {
       placeholder: "Ejemplo",
       validation: {
         required: "El nombre es obligatorio",
-      }
+      },
     },
     {
       id: "correo",
@@ -110,7 +86,7 @@ const onSubmit = async (values) => {
       placeholder: "ejemplo@ejemplo.com",
       validation: {
         required: "El email es obligatorio",
-      }
+      },
     },
     {
       id: "clave",
@@ -128,6 +104,7 @@ const onSubmit = async (values) => {
     },
   ];
 
+
   return (
     <SimpleTable
       data={data}
@@ -136,6 +113,7 @@ const onSubmit = async (values) => {
       formFields={formFields}
       modalTitle={"Crear Usuario"}
       onSubmit={onSubmit}
+      serverError={error}
     />
   );
 }

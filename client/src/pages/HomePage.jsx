@@ -5,6 +5,7 @@ import img3 from "../assets/img3.webp";
 import img4 from "../assets/img4.webp";
 import img5 from "../assets/img5.webp";
 import img6 from "../assets/img6.webp";
+import { useAuth } from "../context/AuthContext";
 
 import Button from "../components/common/Button";
 import {
@@ -13,8 +14,9 @@ import {
 } from "../components/HomePage/ImgWithText";
 import FeatureCard from "../components/HomePage/FeatureCard";
 
-
 function HomePage() {
+  const { isAuthenticated } = useAuth();
+
   return (
     <div key="1" className="bg-[#f7f7f7]">
       <div
@@ -39,10 +41,10 @@ function HomePage() {
               Contacto
             </a>
             <Button
-              texto="Iniciar sesión"
+              texto={isAuthenticated ? "Dashboard" : "Iniciar sesión"}
               className="bg-violet-800 hover:bg-violet-700 text-white"
-              to="login"
-            ></Button>
+              to={isAuthenticated ? "/Dashboard" : "login"}
+            />
           </div>
         </div>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center text-white">
@@ -106,16 +108,16 @@ function HomePage() {
             buttonStyle="bg-violet-800 hover:bg-violet-700 text-white"
           />
           <div className="bg-violet-700 text-white p-6">
-          <FeatureCard
-            title="Gestión de eventos personalizada"
-            titleC="text-white"
-            subtitle="Organización de Eventos Inolvidables"
-            subtitleC="text-white"
-            description="Nuestro equipo de profesionales experimentados se encargará de todos los detalles para hacer de su evento una experiencia memorable, sea una boda, conferencia o reunión familiar."
-            descriptionC="text-white"
-            buttonText="Reservar"
-            buttonStyle="bg-white hover:bg-zinc-300 text-violet-700"
-          />
+            <FeatureCard
+              title="Gestión de eventos personalizada"
+              titleC="text-white"
+              subtitle="Organización de Eventos Inolvidables"
+              subtitleC="text-white"
+              description="Nuestro equipo de profesionales experimentados se encargará de todos los detalles para hacer de su evento una experiencia memorable, sea una boda, conferencia o reunión familiar."
+              descriptionC="text-white"
+              buttonText="Reservar"
+              buttonStyle="bg-white hover:bg-zinc-300 text-violet-700"
+            />
           </div>
           <FeatureCard
             title="Apartamento privado de lujo"

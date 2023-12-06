@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, useMemo } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 import { getUsersRequest, createUserRequest } from "../api/users";
 
 const UserContext = createContext();
@@ -13,44 +13,41 @@ export const useUser = () => {
 
 export function UserProvider({ children }) {
   const [users, setUsers] = useState([]);
-  const [error, setError] = useState(null);
+  const [errors, setErrors] = useState();
 
   useEffect(() => {
-    if (error) {
+    if (errors && errors.length > 0) {
       const timer = setTimeout(() => {
-        setError(null);
+        setErrors(null);
       }, 5000);
       return () => clearTimeout(timer);
     }
-  }, [error]);
+  }, [errors]);
 
   const getUsers = async () => {
     try {
       const res = await getUsersRequest();
       setUsers(res.data);
+      setErrors(null);
     } catch (error) {
-      setError(error.message);
+      setErrors(error.message);
     }
   };
 
   const createUser = async (user) => {
     try {
       const res = await createUserRequest(user);
-      setUsers(prevUsers => [...prevUsers, res.data]);
+      setUsers(res.data);
+      setErrors(null);
     } catch (error) {
-      setError(error.response.data.message);
+      setErrors(error.response.data.message);
     }
   };
 
-  const value = useMemo(() => ({
-    users,
-    getUsers,
-    createUser,
-    error,
-  }), [users, error]);
-
   return (
-    <UserContext.Provider value={value}>
+    <UserContext.Provider 
+    value={{ users, getUsers, createUser, errors }}
+    >
       {children}
     </UserContext.Provider>
   );
