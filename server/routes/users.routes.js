@@ -1,7 +1,13 @@
+//Se importa el objeto 'Router' desde el modulo 'Express' para crear instancias de objetos de enrutador (organizar y manejar las rutas en una aplicacion)
 import { Router } from "express";
+
+//Se importan las funciones creadas en la carpeta controller 
 import { getUsers, createUser, updateUser, deleteUser, getUser, loginUser } from "../controllers/users.controller.js";
+
+//Importa la funcion 'tokenExists' desde la ruta para implementar un middleware y validar la existencia de un token de autenticación 
 import { tokenExists } from "../middlewares/validateToken.js";
 
+//Instancia de 'Router'
 const router = Router();
 
 // Rutas que no requieren autenticación

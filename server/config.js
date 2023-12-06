@@ -1,7 +1,10 @@
+//  Trae un valor del package.json para ser usado
 import { config } from "dotenv";
 
+//Usa un metodo del dotenv
 config()
 
+//  Asigna valores de la base de datos que permitan su identificacion
 export const SECRETKEY = process.env.SECRETKEY || "secret"
 export const PORT = process.env.PORT || 3000
 export const DB_HOST = process.env.DB_HOST || "localhost"
