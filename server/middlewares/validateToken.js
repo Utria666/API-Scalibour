@@ -1,6 +1,8 @@
+//Trae las librerias para 
 import jwt from "jsonwebtoken";
 import { SECRETKEY } from "../config.js";
 
+//Valida que un tocken exista, crea una variable que va a solicitar cookies a ((la pagina web)?), si este token no existe devuelve un error decide no tiene autorizacion, procede a validar si la clave que traemos es correcta, si no nos retorna que no es valido. Solicita tener datos del usuario para guardarlo como cookie
 export const tokenExists  = (req, res, next) => {
   try {
     const { token } = req.cookies;
